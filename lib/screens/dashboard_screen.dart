@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_shop_pos/screens/customer_screen.dart';
 import 'package:mobile_shop_pos/screens/inventory_screen.dart';
 import 'package:mobile_shop_pos/screens/overview_screen.dart';
 import 'package:mobile_shop_pos/screens/purchase_screen.dart';
@@ -24,7 +23,6 @@ class POSDashboardState extends State<POSDashboard> {
     SalesScreen(),
     PurchaseScreen(),
     InventoryScreen(),
-    CustomersScreen(),
     VendorScreen(),
   ];
 
@@ -124,23 +122,14 @@ class POSDashboardState extends State<POSDashboard> {
                             });
                           },
                         ),
+
                         MenuItemWidget(
-                          icon: Icons.person,
-                          title: 'Customers',
+                          icon: Icons.store,
+                          title: 'Vendors',
                           isSelected: selectedIndex == 4,
                           onTap: () {
                             setState(() {
                               selectedIndex = 4;
-                            });
-                          },
-                        ),
-                        MenuItemWidget(
-                          icon: Icons.store,
-                          title: 'Vendors',
-                          isSelected: selectedIndex == 5,
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = 5;
                             });
                           },
                         ),

@@ -1,82 +1,97 @@
 class VendorModel {
-  final String vendorImage;
+  final String id;
   final String vendorName;
   final String vendorAddress;
+  final String vendorContact;
 
   VendorModel({
-    required this.vendorImage,
+    required this.id,
     required this.vendorName,
     required this.vendorAddress,
+    required this.vendorContact,
   });
 
   // Convert VendorModel instance to a JSON Map
   Map<String, dynamic> toJson() {
     return {
-      'vendorImage': vendorImage,
+      'id': id,
       'vendorName': vendorName,
       'vendorAddress': vendorAddress,
+      'vendorContact': vendorContact,
     };
   }
 
   // Create VendorModel instance from a JSON Map
   factory VendorModel.fromJson(Map<String, dynamic> json) {
     return VendorModel(
-      vendorImage: json['vendorImage'],
+      id: json['id'],
       vendorName: json['vendorName'],
       vendorAddress: json['vendorAddress'],
+      vendorContact: json['vendorContact'],
     );
   }
-
-  List<VendorModel> dummyVendors = [
-    VendorModel(
-      vendorImage: 'https://example.com/vendor1.png',
-      vendorName: 'Multan Mobile Hub',
-      vendorAddress: 'Gulgasht Colony, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor2.png',
-      vendorName: 'Saif Mobile Center',
-      vendorAddress: 'Hussain Agahi, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor3.png',
-      vendorName: 'Techno World Mobiles',
-      vendorAddress: 'Cantt Market, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor4.png',
-      vendorName: 'Fast Mobile Solutions',
-      vendorAddress: 'Chowk Bazaar, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor5.png',
-      vendorName: 'Smart Mobile Point',
-      vendorAddress: 'Bosan Road, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor6.png',
-      vendorName: 'Makkah Mobile House',
-      vendorAddress: 'Shah Rukn-e-Alam, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor7.png',
-      vendorName: 'City Mobile Zone',
-      vendorAddress: 'Vehari Chowk, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor8.png',
-      vendorName: 'Mobile Mart Multan',
-      vendorAddress: 'Dera Adda, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor9.png',
-      vendorName: 'Future Tech Mobiles',
-      vendorAddress: 'Nawan Shehar, Multan, Pakistan',
-    ),
-    VendorModel(
-      vendorImage: 'https://example.com/vendor10.png',
-      vendorName: 'Al-Madina Mobile Gallery',
-      vendorAddress: 'Qasim Bela, Multan, Pakistan',
-    ),
-  ];
 }
+
+// Dummy Vendors List
+List<VendorModel> dummyVendors = [
+  VendorModel(
+    id: '1',
+    vendorName: 'Multan Mobile Hub',
+    vendorAddress: 'Gulgasht Colony, Multan, Pakistan',
+    vendorContact: '+92 300 1234567',
+  ),
+  VendorModel(
+    id: '2',
+    vendorName: 'Saif Mobile Center',
+    vendorAddress: 'Hussain Agahi, Multan, Pakistan',
+    vendorContact: '+92 301 7654321',
+  ),
+  VendorModel(
+    id: '3',
+    vendorName: 'Techno World Mobiles',
+    vendorAddress: 'Cantt Market, Multan, Pakistan',
+    vendorContact: '+92 302 9876543',
+  ),
+  VendorModel(
+    id: '4',
+    vendorName: 'Fast Mobile Solutions',
+    vendorAddress: 'Chowk Bazaar, Multan, Pakistan',
+    vendorContact: '+92 303 5678901',
+  ),
+  VendorModel(
+    id: '5',
+    vendorName: 'Smart Mobile Point',
+    vendorAddress: 'Bosan Road, Multan, Pakistan',
+    vendorContact: '+92 304 1122334',
+  ),
+  VendorModel(
+    id: '6',
+    vendorName: 'Makkah Mobile House',
+    vendorAddress: 'Shah Rukn-e-Alam, Multan, Pakistan',
+    vendorContact: '+92 305 4455667',
+  ),
+  VendorModel(
+    id: '7',
+    vendorName: 'City Mobile Zone',
+    vendorAddress: 'Vehari Chowk, Multan, Pakistan',
+    vendorContact: '+92 306 7788990',
+  ),
+  VendorModel(
+    id: '8',
+    vendorName: 'Mobile Mart Multan',
+    vendorAddress: 'Dera Adda, Multan, Pakistan',
+    vendorContact: '+92 307 9911223',
+  ),
+  VendorModel(
+    id: '9',
+    vendorName: 'Future Tech Mobiles',
+    vendorAddress: 'Nawan Shehar, Multan, Pakistan',
+    vendorContact: '+92 308 3344556',
+  ),
+  VendorModel(
+    id: '10',
+    vendorName: 'Al-Madina Mobile Gallery',
+    vendorAddress: 'Qasim Bela, Multan, Pakistan',
+    vendorContact: '+92 309 5566778',
+  ),
+];
