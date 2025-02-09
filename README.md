@@ -7,6 +7,7 @@ Introducing Mobile Shop POS – a powerful and easy-to-use Point of Sale (POS) s
 ✅ User-Friendly and Fast Performance ⚡
 
 Perfect for mobile stores, electronics shops, and retail businesses. Start managing your store smarter and faster with our Flutter-based POS system!
+Video Link: https://youtu.be/Zy-pyQWeMrk
 
 
 
