@@ -9,9 +9,11 @@ class ProductModel {
   final List<String> imeiNumbers;
   final List<String> serialNumbers;
   final String? vendorName;
-  final String? customerName;
+  String? customerName;
   final String company;
-  final String? imageUrl;
+  String? customerAddress;
+  int? customerCnic;
+  DateTime? dateTime;
 
   ProductModel({
     required this.productId,
@@ -26,7 +28,9 @@ class ProductModel {
     this.vendorName,
     this.customerName,
     required this.company,
-    this.imageUrl,
+    this.customerAddress,
+    this.customerCnic,
+    this.dateTime,
   });
 
   // Convert a ProductModel instance into a Map.
@@ -43,28 +47,31 @@ class ProductModel {
       'serialNumbers': serialNumbers,
       'vendorName': vendorName,
       'company': company,
-      'imageUrl': imageUrl,
+      'customerAddress': customerAddress,
       'customerName': customerName,
+      'customerCnic': customerCnic,
+      'dateTime': dateTime,
     };
   }
 
   // Create a ProductModel instance from a Map.
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      productId: json['productId'],
-      productName: json['productName'],
-      productInvoice: json['productInvoice'],
-      salePrice: json['salePrice'],
-      ram: json['ram'],
-      rom: json['rom'],
-      stock: json['stock'],
-      imeiNumbers: List<String>.from(json['imeiNumbers']),
-      serialNumbers: List<String>.from(json['serialNumbers']),
-      vendorName: json['vendorName'],
-      company: json['company'],
-      imageUrl: json['imageUrl'],
-      customerName: json['customerName'],
-    );
+        productId: json['productId'],
+        productName: json['productName'],
+        productInvoice: json['productInvoice'],
+        salePrice: json['salePrice'],
+        ram: json['ram'],
+        rom: json['rom'],
+        stock: json['stock'],
+        imeiNumbers: List<String>.from(json['imeiNumbers']),
+        serialNumbers: List<String>.from(json['serialNumbers']),
+        vendorName: json['vendorName'],
+        company: json['company'],
+        customerAddress: json['customerAddress'],
+        customerName: json['customerName'],
+        dateTime: json['dateTime'],
+        customerCnic: json['customerCnic']);
   }
 }
 
@@ -81,7 +88,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN001', 'SN002'],
       vendorName: 'Vendor A',
       company: 'Infinix',
-      imageUrl: 'https://images.app.goo.gl/6ezMTG45bjK7kytX7'),
+      customerAddress: 'https://images.app.goo.gl/6ezMTG45bjK7kytX7'),
   ProductModel(
       productId: '002',
       productName: 'Tecno Spark 10',
@@ -94,7 +101,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN003', 'SN004'],
       vendorName: 'Vendor B',
       company: 'Tecno',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '003',
       productName: 'QMobile Noir Z12',
@@ -107,7 +114,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN005'],
       vendorName: 'Vendor C',
       company: 'QMobile',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '004',
       productName: 'VGO Tel Smart 7',
@@ -120,7 +127,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN006'],
       vendorName: 'Vendor D',
       company: 'VGO Tel',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '005',
       productName: 'GFive Smart 5',
@@ -133,7 +140,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN007'],
       vendorName: 'Vendor E',
       company: 'GFive',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '006',
       productName: 'Sparx Neo 7',
@@ -146,7 +153,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN008'],
       vendorName: 'Vendor F',
       company: 'Sparx',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '007',
       productName: 'Oppo A17',
@@ -159,7 +166,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN009'],
       vendorName: 'Vendor G',
       company: 'Oppo',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '008',
       productName: 'Realme C35',
@@ -172,7 +179,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN010'],
       vendorName: 'Vendor H',
       company: 'Realme',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '009',
       productName: 'Samsung Galaxy A14',
@@ -185,7 +192,7 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN011'],
       vendorName: 'Vendor I',
       company: 'Samsung',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
   ProductModel(
       productId: '010',
       productName: 'iPhone 14 Pro',
@@ -198,5 +205,5 @@ List<ProductModel> dummyProducts = [
       serialNumbers: ['SN012'],
       vendorName: 'Vendor J',
       company: 'Apple',
-      imageUrl: 'https://picsum.photos/250?image=9'),
+      customerAddress: 'https://picsum.photos/250?image=9'),
 ];

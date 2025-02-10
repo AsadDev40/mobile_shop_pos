@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_shop_pos/models/accessories_model.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
 
 class SellAccessoriesPopup extends StatefulWidget {
   final AccessoriesModel accessorymodel;
@@ -19,6 +21,7 @@ class _SellAccessoriesPopupState extends State<SellAccessoriesPopup> {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -44,15 +47,14 @@ class _SellAccessoriesPopupState extends State<SellAccessoriesPopup> {
                 hintText: "Quantity",
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                controller: priceController,
-                hintText: "Price",
-                keyboardType: TextInputType.number,
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
+                  productProvider.sellAccessory(
+                      widget.accessorymodel.id.toString(),
+                      int.parse(quantityController.text),
+                      customerController.text,
+                      DateTime.now());
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

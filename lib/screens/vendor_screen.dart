@@ -5,6 +5,8 @@ import 'package:mobile_shop_pos/widgets/add_vendor_popup.dart';
 import 'package:mobile_shop_pos/widgets/vendor_widget.dart';
 
 class VendorScreen extends StatefulWidget {
+  const VendorScreen({super.key});
+
   @override
   State<VendorScreen> createState() => _VendorScreenState();
 }

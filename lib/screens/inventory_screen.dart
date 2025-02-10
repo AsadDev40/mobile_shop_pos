@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_shop_pos/models/accessories_model.dart';
 import 'package:mobile_shop_pos/models/product_model.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
@@ -20,117 +22,144 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   void initState() {
     super.initState();
-    filteredProducts = List.from(dummyProducts);
-    filteredAccessories = List.from(dummyAccessories);
-    combinedItems = [...filteredProducts, ...filteredAccessories];
+    searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    searchController.removeListener(_onSearchChanged);
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _filterProducts(searchController.text);
+    });
   }
 
   void _filterProducts(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        filteredProducts = List.from(dummyProducts);
-        filteredAccessories = List.from(dummyAccessories);
-      } else {
-        String lowerQuery = query.toLowerCase();
+    final productProvider =
+        Provider.of<ProductProvider>(context, listen: false);
+    final products = productProvider.products;
+    final accessories = productProvider.accessories;
 
-        filteredProducts = dummyProducts.where((product) {
-          bool nameMatch =
-              product.productName.toLowerCase().contains(lowerQuery);
-          bool imeiMatch = product.imeiNumbers
-              .any((imei) => imei.toLowerCase().contains(lowerQuery));
-          return nameMatch || imeiMatch;
-        }).toList();
+    if (query.isEmpty) {
+      filteredProducts = List.from(products);
+      filteredAccessories = List.from(accessories);
+    } else {
+      String lowerQuery = query.toLowerCase();
 
-        filteredAccessories = dummyAccessories.where((accessory) {
-          return accessory.name.toLowerCase().contains(lowerQuery);
-        }).toList();
-      }
+      filteredProducts = products.where((product) {
+        bool nameMatch = product.productName.toLowerCase().contains(lowerQuery);
+        bool imeiMatch = product.imeiNumbers
+            .any((imei) => imei.toLowerCase().contains(lowerQuery));
+        return nameMatch || imeiMatch;
+      }).toList();
 
-      // Merge products and accessories into a single list
-      combinedItems = [...filteredProducts, ...filteredAccessories];
-    });
+      filteredAccessories = accessories.where((accessory) {
+        return accessory.name.toLowerCase().contains(lowerQuery);
+      }).toList();
+    }
+
+    combinedItems = [...filteredProducts, ...filteredAccessories];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                const Text(
-                  "Inventory",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  width: 200,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (value) => _filterProducts(value),
-                    decoration: const InputDecoration(
-                      hintText: "Search by Name or IMEI...",
-                      border: InputBorder.none,
-                      icon: Icon(Icons.search, color: AppColors.PrimaryColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              itemCount: combinedItems.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 5,
-                childAspectRatio: 1.4,
-              ),
-              itemBuilder: (context, index) {
-                final item = combinedItems[index];
+    return Consumer<ProductProvider>(
+      builder: (context, productProvider, child) {
+        // Update filtered lists whenever provider changes
+        filteredProducts = List.from(productProvider.products);
+        filteredAccessories = List.from(productProvider.accessories);
+        combinedItems = [...filteredProducts, ...filteredAccessories];
 
-                if (item is ProductModel) {
-                  return ProductListViewContent(products: [item]);
-                } else if (item is AccessoriesModel) {
-                  return AccessoriesListViewContent(accessories: [item]);
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, right: 30),
-            child: FloatingActionButton(
-              backgroundColor: AppColors.PrimaryColor,
-              onPressed: () {
-                showDialog(
-                    context: context, builder: (context) => AddOptionsPopup());
-              },
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      "Inventory",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 200,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: const InputDecoration(
+                          hintText: "Search by Name or IMEI...",
+                          border: InputBorder.none,
+                          icon:
+                              Icon(Icons.search, color: AppColors.PrimaryColor),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              Expanded(
+                child: GridView.builder(
+                  itemCount: combinedItems.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 5,
+                    childAspectRatio: 1.4,
+                  ),
+                  itemBuilder: (context, index) {
+                    final item = combinedItems[index];
+
+                    if (item is ProductModel) {
+                      return ProductListViewContent(products: [item]);
+                    } else if (item is AccessoriesModel) {
+                      return AccessoriesListViewContent(accessories: [item]);
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, right: 30),
+                child: FloatingActionButton(
+                  backgroundColor: AppColors.PrimaryColor,
+                  onPressed: () async {
+                    bool? productAdded = await showDialog(
+                      context: context,
+                      builder: (context) => AddOptionsPopup(),
+                    );
+
+                    if (productAdded == true) {
+                      setState(() {}); // Refresh UI after adding a new product
+                    }
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

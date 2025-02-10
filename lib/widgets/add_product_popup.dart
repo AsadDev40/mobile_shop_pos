@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_shop_pos/models/product_model.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
+import 'package:mobile_shop_pos/service/utils.dart';
 import 'package:mobile_shop_pos/utils/app_list.dart';
 
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/custom_drop_dpwn.dart';
 import 'package:mobile_shop_pos/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddProductPopup extends StatefulWidget {
   const AddProductPopup({super.key});
@@ -20,11 +25,13 @@ class _AddProductPopupState extends State<AddProductPopup> {
   final TextEditingController romController = TextEditingController();
   final TextEditingController vendorController = TextEditingController();
   final TextEditingController imei1Controller = TextEditingController();
+  final TextEditingController serialNumberController = TextEditingController();
   final TextEditingController imei2Controller = TextEditingController();
   String selectedCompany = 'Select Company';
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -71,6 +78,11 @@ class _AddProductPopupState extends State<AddProductPopup> {
               ),
               const SizedBox(height: 10),
               CustomTextField(
+                controller: serialNumberController,
+                hintText: "Serial Number",
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
                 controller: imei1Controller,
                 hintText: "IMEI 1",
               ),
@@ -97,7 +109,40 @@ class _AddProductPopupState extends State<AddProductPopup> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  if (nameController.text.isEmpty) {
+                    Utils.showToast('Please Enter Product Name');
+                  } else if (invoiceController.text.isEmpty) {
+                    Utils.showToast('Please Enter Invoice');
+                  } else if (priceController.text.isEmpty) {
+                    Utils.showToast('Please Enter Price');
+                  } else if (ramController.text.isEmpty) {
+                    Utils.showToast('Please Enter Ram');
+                  } else if (romController.text.isEmpty) {
+                    Utils.showToast('Please Enter Rom');
+                  } else if (vendorController.text.isEmpty) {
+                    Utils.showToast('Please Enter Vendor Name');
+                  } else if (imei1Controller.text.isEmpty) {
+                    Utils.showToast('Please Enter Imei');
+                  } else if (serialNumberController.text.isEmpty) {
+                    Utils.showToast('Please Enter Serial Number');
+                  } else if (selectedCompany == 'Select Company') {
+                    Utils.showToast('Please Select Company');
+                  }
+                  final String productId = const Uuid().v4();
+                  final ProductModel product = ProductModel(
+                      productId: productId,
+                      productName: nameController.text,
+                      productInvoice: invoiceController.text,
+                      salePrice: priceController.text,
+                      ram: ramController.text,
+                      rom: romController.text,
+                      stock: 'availiable',
+                      vendorName: vendorController.text,
+                      imeiNumbers: [imei1Controller.text, imei2Controller.text],
+                      serialNumbers: [serialNumberController.text],
+                      company: selectedCompany);
+                  await productProvider.addProduct(product);
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

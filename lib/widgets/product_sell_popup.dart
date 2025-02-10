@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_shop_pos/models/product_model.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
 
 class SellProductPopUp extends StatefulWidget {
-  final ProductModel productModel;
-  const SellProductPopUp({super.key, required this.productModel});
+  final String productId;
+
+  const SellProductPopUp({super.key, required this.productId});
 
   @override
   State<SellProductPopUp> createState() => _SellProductPopUpState();
@@ -18,6 +20,7 @@ class _SellProductPopUpState extends State<SellProductPopUp> {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -51,7 +54,14 @@ class _SellProductPopUpState extends State<SellProductPopUp> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  productProvider.updateProductFields(
+                      dateTime: DateTime.now(),
+                      productId: widget.productId,
+                      stock: 'sold',
+                      customerAddress: customerAddress.text,
+                      customerName: customerName.text,
+                      customerCnic: int.tryParse(customerCnic.text));
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

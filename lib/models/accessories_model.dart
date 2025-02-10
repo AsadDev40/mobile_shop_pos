@@ -4,6 +4,8 @@ class AccessoriesModel {
   int quantity;
   int invoice;
   int price;
+  String? customerName;
+  DateTime? dateTime;
 
   AccessoriesModel({
     this.id,
@@ -11,6 +13,8 @@ class AccessoriesModel {
     required this.quantity,
     required this.invoice,
     required this.price,
+    this.customerName,
+    this.dateTime,
   });
 
   // Convert object to JSON
@@ -21,6 +25,8 @@ class AccessoriesModel {
       'quantity': quantity,
       'invoice': invoice,
       'price': price,
+      'customerName': customerName,
+      'dateTime': dateTime,
     };
   }
 
@@ -32,6 +38,8 @@ class AccessoriesModel {
       quantity: json['quantity'],
       invoice: json['invoice'],
       price: json['price'],
+      customerName: json['customerName'],
+      dateTime: json['dateTime'],
     );
   }
 }

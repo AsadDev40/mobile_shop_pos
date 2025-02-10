@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile_shop_pos/models/accessories_model.dart';
 import 'package:mobile_shop_pos/models/product_model.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
@@ -35,7 +37,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
   @override
   void initState() {
     super.initState();
+    _loadData();
     _filterItems('');
+  }
+
+  Future<void> _loadData() async {
+    final productProvider =
+        Provider.of<ProductProvider>(context, listen: false);
+    await productProvider.loadProducts();
+    await productProvider.loadAccessories();
   }
 
   void onFilterChanged(String? value) {
@@ -45,12 +55,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _filterItems(String query) {
+    final productProvider =
+        Provider.of<ProductProvider>(context, listen: false);
+
     setState(() {
       if (query.isEmpty) {
-        filteredProducts = List.from(dummyProducts);
-        filteredAccessories = List.from(dummyAccessories);
+        filteredProducts = List.from(productProvider.products);
+        filteredAccessories = List.from(productProvider.accessories);
       } else {
-        filteredProducts = dummyProducts.where((product) {
+        filteredProducts = productProvider.products.where((product) {
           final nameMatch =
               product.productName.toLowerCase().contains(query.toLowerCase());
           final imeiMatch = product.imeiNumbers
@@ -59,7 +72,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           return nameMatch || imeiMatch;
         }).toList();
 
-        filteredAccessories = dummyAccessories.where((accessory) {
+        filteredAccessories = productProvider.accessories.where((accessory) {
           return accessory.name.toLowerCase().contains(query.toLowerCase());
         }).toList();
       }
@@ -68,6 +81,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
+
     List<double> salesData =
         selectedValue == 'This Week' ? salesDataThisWeek : salesDataThisYear;
     List<double> lossData =
@@ -94,7 +109,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               const SizedBox(width: 16),
               StatCard(
                   title: 'Total Products',
-                  value: '1,234',
+                  value: '${productProvider.products.length}',
                   color: AppColors.SecondaryColor),
               StatCard(
                   title: 'Profit',

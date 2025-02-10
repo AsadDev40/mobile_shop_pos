@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
 
 class AddAccessoriesQuantityPopup extends StatefulWidget {
-  const AddAccessoriesQuantityPopup({super.key});
+  final String id;
+  const AddAccessoriesQuantityPopup({super.key, required this.id});
 
   @override
   State<AddAccessoriesQuantityPopup> createState() =>
@@ -16,6 +19,7 @@ class _AddAccessoriesQuantityPopupState
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -39,6 +43,8 @@ class _AddAccessoriesQuantityPopupState
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
+                  productProvider.updateStock(
+                      widget.id, int.parse(quantityController.text));
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
