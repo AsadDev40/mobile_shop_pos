@@ -192,12 +192,7 @@ class ProductProvider extends ChangeNotifier {
 
         await _saveAccessories();
         await _saveSales();
-      } else {
-        print(
-            "Error: Not enough stock to sell! Available: ${_accessories[index].quantity}");
-      }
-    } else {
-      print("Error: Accessory with ID $id not found!");
+      } else {}
     }
   }
 }
