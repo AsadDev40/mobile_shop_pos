@@ -24,21 +24,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   List<ProductModel> filteredProducts = [];
   List<AccessoriesModel> filteredAccessories = [];
 
-  List<double> salesDataThisWeek = [1000, 1200, 1500, 1800, 1300, 1600, 2000];
-  List<double> lossDataThisWeek = [200, 300, 250, 150, 100, 180, 220];
-
-  List<double> salesDataThisYear =
-      List.generate(12, (index) => 3000 + (index % 3) * 500);
-  List<double> lossDataThisYear =
-      List.generate(12, (index) => 500 + (index % 2) * 200);
-
-  List<String> dropdownlist = ['This Week', 'This Year'];
-
   @override
   void initState() {
     super.initState();
-    _loadData();
-    _filterItems('');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   Future<void> _loadData() async {
@@ -46,6 +37,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Provider.of<ProductProvider>(context, listen: false);
     await productProvider.loadProducts();
     await productProvider.loadAccessories();
+    productProvider.updateSalesAndLossData();
+    _filterItems('');
   }
 
   void onFilterChanged(String? value) {
@@ -83,10 +76,61 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
 
-    List<double> salesData =
-        selectedValue == 'This Week' ? salesDataThisWeek : salesDataThisYear;
-    List<double> lossData =
-        selectedValue == 'This Week' ? lossDataThisWeek : lossDataThisYear;
+    if (productProvider.products.isEmpty &&
+        productProvider.accessories.isEmpty) {
+      // Show a loading indicator while data is being fetched
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    List<double> salesData = selectedValue == 'This Week'
+        ? productProvider.salesDataThisWeek
+        : productProvider.salesDataThisYear;
+    List<double> lossData = selectedValue == 'This Week'
+        ? productProvider.lossDataThisWeek
+        : productProvider.lossDataThisYear;
+
+    // Extract percentages for each brand
+    double infinixPercentage = double.parse((productProvider
+            .getSalesPercentage()
+            .firstWhere((e) => e['company'] == 'Infinix',
+                orElse: () =>
+                    <String, Object>{'percentage': 0.0})['percentage'] as num)
+        .toDouble()
+        .toStringAsFixed(2));
+
+    double tecnoPercentage = double.parse((productProvider
+            .getSalesPercentage()
+            .firstWhere((e) => e['company'] == 'Techno',
+                orElse: () =>
+                    <String, Object>{'percentage': 0.0})['percentage'] as num)
+        .toDouble()
+        .toStringAsFixed(2));
+
+    double realmePercentage = double.parse((productProvider
+            .getSalesPercentage()
+            .firstWhere((e) => e['company'] == 'Realme',
+                orElse: () =>
+                    <String, Object>{'percentage': 0.0})['percentage'] as num)
+        .toDouble()
+        .toStringAsFixed(2));
+
+    double redmiPercentage = double.parse((productProvider
+            .getSalesPercentage()
+            .firstWhere((e) => e['company'] == 'Redmi',
+                orElse: () =>
+                    <String, Object>{'percentage': 0.0})['percentage'] as num)
+        .toDouble()
+        .toStringAsFixed(2));
+
+    double othersPercentage = double.parse((productProvider
+            .getSalesPercentage()
+            .firstWhere((e) => e['company'] == 'Others',
+                orElse: () =>
+                    <String, Object>{'percentage': 0.0})['percentage'] as num)
+        .toDouble()
+        .toStringAsFixed(2));
 
     final combinedItems = [...filteredProducts, ...filteredAccessories];
 
@@ -95,34 +139,91 @@ class _OverviewScreenState extends State<OverviewScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Overview',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Overview',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        await productProvider.exportData();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Data exported successfully!')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to export data: $e')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.PrimaryColor),
+                    child: Text(
+                      'Export Data',
+                      style: AppTextStyles.body1.copyWith(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        await productProvider.importData();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Data imported successfully!')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to import data: $e')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Import Data',
+                      style: AppTextStyles.body1.copyWith(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.PrimaryColor),
+                  ),
+                ],
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
               StatCard(
                   title: 'Total Sales',
-                  value: 'RS 12,345',
+                  value:
+                      'RS ${(productProvider.getTotalProductSales()).toStringAsFixed(0)}',
                   color: AppColors.PrimaryColor),
               const SizedBox(width: 16),
               StatCard(
-                  title: 'Total Products',
+                  title: 'Total Mobiles',
                   value: '${productProvider.products.length}',
                   color: AppColors.SecondaryColor),
               StatCard(
                   title: 'Profit',
-                  value: 'RS 1,234',
+                  value:
+                      'RS ${(productProvider.getTotalAccessoriesProfit() + productProvider.getTotalProductProfit()).toStringAsFixed(0)} ',
                   color: AppColors.TertiaryColor),
               StatCard(
                   title: 'Losses',
-                  value: 'RS 1,234',
+                  value:
+                      'RS ${(productProvider.getTotalAccessoriesLoss() + productProvider.getTotalProductLoss()).toStringAsFixed(0)} ',
                   color: AppColors.PrimaryColor),
               const SizedBox(width: 16),
               StatCard(
-                  title: 'Customers',
-                  value: '567',
+                  title: 'Accesories',
+                  value: productProvider.accessories.length.toString(),
                   color: AppColors.SecondaryColor),
             ],
           ),
@@ -134,7 +235,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 child: SalesChart(
                   selectedFilter: selectedValue,
                   onFilterChanged: onFilterChanged,
-                  filterValues: dropdownlist,
+                  filterValues: ['This Week', 'This Year'],
                   salesData: salesData,
                   lossData: lossData,
                 ),
@@ -142,12 +243,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
               const SizedBox(width: 20),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.3,
-                child: const MobileSalesChart(
-                  infinixPercentage: 35,
-                  tecnoPercentage: 25,
-                  realmePercentage: 20,
-                  redmiPercentage: 15,
-                  othersPercentage: 5,
+                child: MobileSalesChart(
+                  unitsSold: productProvider.getSoldProducts().length,
+                  infinixPercentage: infinixPercentage,
+                  tecnoPercentage: tecnoPercentage,
+                  realmePercentage: realmePercentage,
+                  redmiPercentage: redmiPercentage,
+                  othersPercentage: othersPercentage,
                 ),
               ),
             ],
@@ -198,7 +300,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 Expanded(
                   child: GridView.builder(
                     itemCount: combinedItems.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
                       mainAxisSpacing: 2,
                       crossAxisSpacing: 5,

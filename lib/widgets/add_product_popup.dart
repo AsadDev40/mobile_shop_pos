@@ -20,7 +20,6 @@ class AddProductPopup extends StatefulWidget {
 class _AddProductPopupState extends State<AddProductPopup> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController invoiceController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
   final TextEditingController ramController = TextEditingController();
   final TextEditingController romController = TextEditingController();
   final TextEditingController vendorController = TextEditingController();
@@ -55,11 +54,6 @@ class _AddProductPopupState extends State<AddProductPopup> {
               CustomTextField(
                 controller: invoiceController,
                 hintText: "Invoice ",
-              ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                controller: priceController,
-                hintText: "Sale Price",
               ),
               const SizedBox(height: 10),
               CustomTextField(
@@ -114,8 +108,6 @@ class _AddProductPopupState extends State<AddProductPopup> {
                     Utils.showToast('Please Enter Product Name');
                   } else if (invoiceController.text.isEmpty) {
                     Utils.showToast('Please Enter Invoice');
-                  } else if (priceController.text.isEmpty) {
-                    Utils.showToast('Please Enter Price');
                   } else if (ramController.text.isEmpty) {
                     Utils.showToast('Please Enter Ram');
                   } else if (romController.text.isEmpty) {
@@ -131,10 +123,10 @@ class _AddProductPopupState extends State<AddProductPopup> {
                   }
                   final String productId = const Uuid().v4();
                   final ProductModel product = ProductModel(
+                      dateTime: DateTime.now(),
                       productId: productId,
                       productName: nameController.text,
                       productInvoice: invoiceController.text,
-                      salePrice: priceController.text,
                       ram: ramController.text,
                       rom: romController.text,
                       stock: 'availiable',

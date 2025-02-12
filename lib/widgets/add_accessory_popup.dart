@@ -17,7 +17,7 @@ class _AddAccessoriesPopupState extends State<AddAccessoriesPopup> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController invoiceController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
+  final TextEditingController vendorController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +43,11 @@ class _AddAccessoriesPopupState extends State<AddAccessoriesPopup> {
               ),
               const SizedBox(height: 10),
               CustomTextField(
+                controller: vendorController,
+                hintText: "Vendor Name",
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
                 controller: quantityController,
                 hintText: "Quantity",
                 keyboardType: TextInputType.number,
@@ -53,22 +58,18 @@ class _AddAccessoriesPopupState extends State<AddAccessoriesPopup> {
                 hintText: "Invoice Price",
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                controller: priceController,
-                hintText: "Price",
-                keyboardType: TextInputType.number,
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   final String id = const Uuid().v4();
                   final AccessoriesModel accessory = AccessoriesModel(
-                      id: id,
-                      name: nameController.text,
-                      quantity: int.parse(quantityController.text),
-                      invoice: int.parse(invoiceController.text),
-                      price: int.parse(priceController.text));
+                    id: id,
+                    name: nameController.text,
+                    vendorName: vendorController.text,
+                    quantity: int.parse(quantityController.text),
+                    invoice: int.parse(invoiceController.text),
+                    dateTime: DateTime.now(),
+                  );
                   productProvider.addAccessory(accessory);
                   Navigator.pop(context);
                 },

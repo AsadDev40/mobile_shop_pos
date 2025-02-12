@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_shop_pos/models/product_model.dart';
 import 'package:mobile_shop_pos/provider/product_provider.dart';
 import 'package:mobile_shop_pos/service/utils.dart';
@@ -16,7 +17,12 @@ class ProductPopupWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
-    bool hasCustomer = product.customerCnic != null;
+
+    bool hasCustomer = product.customerName != null &&
+        product.customerName!.isNotEmpty &&
+        product.customerCnic != null &&
+        product.customerAddress != null &&
+        product.customerAddress!.isNotEmpty;
 
     return AlertDialog(
       shadowColor: AppColors.SecondaryColor,
@@ -75,8 +81,10 @@ class ProductPopupWidget extends StatelessWidget {
                   style: const TextStyle(fontSize: 14, color: Colors.black54)),
               Text("Address: ${product.customerAddress}",
                   style: const TextStyle(fontSize: 14, color: Colors.black54)),
-              Text("Date Time: ${product.dateTime}",
-                  style: const TextStyle(fontSize: 14, color: Colors.black54)),
+              Text(
+                "Date Time: ${product.dateTime != null ? DateFormat('yyyy-MM-dd hh:mm a').format(product.dateTime!) : 'N/A'}",
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
             ] else ...[
               Text("Vendor: ${product.vendorName}",
                   style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
@@ -96,11 +104,12 @@ class ProductPopupWidget extends StatelessWidget {
             Text("IMEI2: ${product.imeiNumbers.last}",
                 style: const TextStyle(fontSize: 14, color: Colors.black54)),
             const SizedBox(height: 8),
-            Text("Price: RS ${product.salePrice}",
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.TertiaryColor,
-                    fontWeight: FontWeight.bold)),
+            if (product.salePrice != null && product.salePrice!.isNotEmpty)
+              Text("Price: RS ${product.salePrice}",
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.TertiaryColor,
+                      fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Text("Invoice: RS ${product.productInvoice}",
                 style: const TextStyle(
@@ -111,15 +120,42 @@ class ProductPopupWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                hasCustomer
-                    ? ElevatedButton(
-                        onPressed: () async {
-                          await productProvider.updateProductFields(
-                              dateTime: DateTime.now(),
-                              productId: product.productId,
-                              stock: 'availiable');
-                          Utils.showToast('Product Returned Successfully');
-                          Navigator.pop(context);
+                if (hasCustomer)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await productProvider.updateProductFields(
+                          customerAddress: null,
+                          customerCnic: null,
+                          customerName: null,
+                          salePrice: '',
+                          productId: product.productId,
+                          stock: 'available');
+                      Utils.showToast('Product Returned Successfully');
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.PrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text("Return",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  )
+                else
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String productId = product.productId;
+                          showDialog(
+                              context: context,
+                              builder: (context) => SellProductPopUp(
+                                    productId: productId,
+                                  ));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.PrimaryColor,
@@ -127,57 +163,34 @@ class ProductPopupWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text("Return",
+                        child: const Text("Sale",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white)),
-                      )
-                    : Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              String productId = product.productId;
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => SellProductPopUp(
-                                        productId: productId,
-                                      ));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.PrimaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text("Sale",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AddProductQuantityPopup(
-                                      productModel: product));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.PrimaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text("Add Quantity",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ),
-                        ],
                       ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AddProductQuantityPopup(
+                                  productModel: product));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.PrimaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text("Add Quantity",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+                    ],
+                  ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(

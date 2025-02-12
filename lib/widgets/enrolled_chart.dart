@@ -107,7 +107,7 @@ class _SalesChartState extends State<SalesChart> {
                   gridData: FlGridData(
                     show: true,
                     drawHorizontalLine: true,
-                    horizontalInterval: 600,
+                    horizontalInterval: 50,
                     getDrawingHorizontalLine: (value) => FlLine(
                       color: Colors.grey[300],
                       strokeWidth: 1,

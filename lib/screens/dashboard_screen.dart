@@ -3,7 +3,7 @@ import 'package:mobile_shop_pos/screens/inventory_screen.dart';
 import 'package:mobile_shop_pos/screens/overview_screen.dart';
 import 'package:mobile_shop_pos/screens/purchase_screen.dart';
 import 'package:mobile_shop_pos/screens/sale_screen.dart';
-import 'package:mobile_shop_pos/screens/vendor_screen.dart';
+// import 'package:mobile_shop_pos/screens/vendor_screen.dart';
 
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/menu_item_widget.dart';
@@ -19,11 +19,11 @@ class POSDashboardState extends State<POSDashboard> {
   int selectedIndex = 0;
 
   final List<Widget> _tabs = [
-    OverviewScreen(),
+    const OverviewScreen(),
     SalesScreen(),
-    PurchaseScreen(),
+    const PurchaseScreen(),
     InventoryScreen(),
-    VendorScreen(),
+    // const VendorScreen(),
   ];
 
   @override
@@ -123,16 +123,16 @@ class POSDashboardState extends State<POSDashboard> {
                           },
                         ),
 
-                        MenuItemWidget(
-                          icon: Icons.store,
-                          title: 'Vendors',
-                          isSelected: selectedIndex == 4,
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = 4;
-                            });
-                          },
-                        ),
+                        // MenuItemWidget(
+                        //   icon: Icons.store,
+                        //   title: 'Vendors',
+                        //   isSelected: selectedIndex == 4,
+                        //   onTap: () {
+                        //     setState(() {
+                        //       selectedIndex = 4;
+                        //     });
+                        //   },
+                        // ),
                       ],
                     ),
                   ),

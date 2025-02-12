@@ -20,7 +20,6 @@ class EditProductPopup extends StatefulWidget {
 class _EditProductPopupState extends State<EditProductPopup> {
   late TextEditingController nameController;
   late TextEditingController invoiceController;
-  late TextEditingController priceController;
   late TextEditingController ramController;
   late TextEditingController romController;
   late TextEditingController vendorController;
@@ -35,7 +34,6 @@ class _EditProductPopupState extends State<EditProductPopup> {
     nameController = TextEditingController(text: widget.product.productName);
     invoiceController =
         TextEditingController(text: widget.product.productInvoice);
-    priceController = TextEditingController(text: widget.product.salePrice);
     ramController = TextEditingController(text: widget.product.ram);
     romController = TextEditingController(text: widget.product.rom);
     vendorController = TextEditingController(text: widget.product.vendorName);
@@ -77,9 +75,6 @@ class _EditProductPopupState extends State<EditProductPopup> {
               const SizedBox(height: 10),
               CustomTextField(
                   controller: invoiceController, hintText: "Invoice"),
-              const SizedBox(height: 10),
-              CustomTextField(
-                  controller: priceController, hintText: "Sale Price"),
               const SizedBox(height: 10),
               CustomTextField(controller: ramController, hintText: "RAM"),
               const SizedBox(height: 10),
@@ -123,7 +118,6 @@ class _EditProductPopupState extends State<EditProductPopup> {
                     productId: widget.product.productId,
                     productName: nameController.text,
                     productInvoice: invoiceController.text,
-                    salePrice: priceController.text,
                     ram: ramController.text,
                     rom: romController.text,
                     stock: widget.product.stock,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_shop_pos/models/accessories_model.dart';
 import 'package:mobile_shop_pos/provider/product_provider.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
@@ -63,7 +64,7 @@ class AccessoriesListViewWidget extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSell;
 
-  AccessoriesListViewWidget({
+  const AccessoriesListViewWidget({
     required this.accessory,
     required this.isSelected,
     required this.onTap,
@@ -162,9 +163,7 @@ class AccessoriesListViewWidget extends StatelessWidget {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  const SizedBox(
-                    width: 5,
-                  ),
+                  const SizedBox(width: 5),
                   Text(
                     accessory.customerName ?? "N/A",
                     style: TextStyle(
@@ -172,9 +171,17 @@ class AccessoriesListViewWidget extends StatelessWidget {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  const SizedBox(height: 6),
                 ],
               ),
+            if (isSell) const SizedBox(width: 5),
+            Text(
+              'Date Time: ${accessory.dateTime != null ? DateFormat('yyyy-MM-dd hh:mm a').format(accessory.dateTime!) : 'N/A'}',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 6),
 
             /// Invoice
             Text(
@@ -187,22 +194,27 @@ class AccessoriesListViewWidget extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            /// Price
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: isSell
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.end,
               children: [
-                Text(
-                  "Price: RS ${accessory.price}",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.PrimaryColor,
-                    fontWeight: FontWeight.bold,
+                if (isSell && accessory.price != null)
+                  Text(
+                    "Price: RS ${accessory.price}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.PrimaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
                 isSell
                     ? ElevatedButton(
-                        onPressed: () {
-                          // Handle Return action
+                        onPressed: () async {
+                          await productProvider.returnAccessory(
+                            accessory.id.toString(),
+                            accessory.quantity,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -246,9 +258,7 @@ class AccessoriesListViewWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 5,
-                          ),
+                          const SizedBox(width: 5),
                           ElevatedButton(
                             onPressed: () {
                               showDialog(
@@ -277,13 +287,6 @@ class AccessoriesListViewWidget extends StatelessWidget {
                       ),
               ],
             ),
-            const SizedBox(height: 6),
-
-            const SizedBox(
-              height: 5,
-            ),
-
-            /// Action Buttons (Return if `isSell` is true, otherwise Add & Sell)
           ],
         ),
       ),

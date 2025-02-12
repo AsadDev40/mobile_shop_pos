@@ -16,13 +16,21 @@ class ProductListViewContent extends StatefulWidget {
 }
 
 class _ProductListViewContentState extends State<ProductListViewContent> {
-  late ProductModel selectedProduct;
+  late ValueNotifier<ProductModel> selectedProductNotifier;
 
   @override
   void initState() {
     super.initState();
+    // Initialize the ValueNotifier with the first product
+    selectedProductNotifier =
+        ValueNotifier<ProductModel>(widget.products.first);
+  }
 
-    selectedProduct = widget.products.first;
+  @override
+  void dispose() {
+    // Dispose of the ValueNotifier when the widget is removed
+    selectedProductNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,13 +41,17 @@ class _ProductListViewContentState extends State<ProductListViewContent> {
           spacing: 16,
           runSpacing: 16,
           children: widget.products.map((product) {
-            return ProductListViewWidget(
-              product: product,
-              isSelected: selectedProduct == product,
-              onTap: () {
-                setState(() {
-                  selectedProduct = product;
-                });
+            return ValueListenableBuilder<ProductModel>(
+              valueListenable: selectedProductNotifier,
+              builder: (context, selectedProduct, child) {
+                return ProductListViewWidget(
+                  product: product,
+                  isSelected: selectedProduct == product,
+                  onTap: () {
+                    // Update the ValueNotifier when a product is tapped
+                    selectedProductNotifier.value = product;
+                  },
+                );
               },
             );
           }).toList(),
@@ -145,17 +157,17 @@ class ProductListViewWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Price: RS ${product.salePrice}",
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.PrimaryColor,
-                          fontWeight: FontWeight.bold,
+                      if (product.salePrice != null &&
+                          product.salePrice!.isNotEmpty)
+                        Text(
+                          "Price: RS ${product.salePrice}",
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.PrimaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: () {
                           showDialog(

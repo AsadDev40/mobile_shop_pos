@@ -111,7 +111,9 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                     if (item is ProductModel) {
                       return ProductListViewContent(products: [item]);
                     } else if (item is AccessoriesModel) {
-                      return AccessoriesListViewContent(accessories: [item]);
+                      return AccessoriesListViewContent(
+                        accessories: [item],
+                      );
                     } else {
                       return const SizedBox.shrink();
                     }

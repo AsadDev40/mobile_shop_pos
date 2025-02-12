@@ -17,6 +17,7 @@ class _SellProductPopUpState extends State<SellProductPopUp> {
   final TextEditingController customerName = TextEditingController();
   final TextEditingController customerAddress = TextEditingController();
   final TextEditingController customerCnic = TextEditingController();
+  final TextEditingController saleControllerPrice = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,12 @@ class _SellProductPopUpState extends State<SellProductPopUp> {
                 hintText: "Customer Address",
                 keyboardType: TextInputType.number,
               ),
+              const SizedBox(height: 10),
+              CustomTextField(
+                controller: saleControllerPrice,
+                hintText: "Sale Price",
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
@@ -61,7 +68,8 @@ class _SellProductPopUpState extends State<SellProductPopUp> {
                       stock: 'sold',
                       customerAddress: customerAddress.text,
                       customerName: customerName.text,
-                      customerCnic: int.tryParse(customerCnic.text));
+                      customerCnic: int.tryParse(customerCnic.text),
+                      salePrice: saleControllerPrice.text);
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

@@ -17,6 +17,12 @@ final List<String> dropdownlist = [
   'This Year',
 ];
 
+final List<String> dropdownlist2 = [
+  'Today',
+  'This Week',
+  'This month',
+];
+
 final List<String> companiesList = [
   'Select Company',
   'Samsung',

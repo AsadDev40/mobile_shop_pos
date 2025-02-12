@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_shop_pos/models/product_model.dart';
+import 'package:mobile_shop_pos/provider/product_provider.dart';
+import 'package:mobile_shop_pos/service/utils.dart';
 import 'package:mobile_shop_pos/utils/constants.dart';
 import 'package:mobile_shop_pos/widgets/custom_textfield.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddProductQuantityPopup extends StatefulWidget {
   final ProductModel productModel;
@@ -19,6 +23,7 @@ class _AddProductQuantityPopupState extends State<AddProductQuantityPopup> {
 
   @override
   Widget build(BuildContext context) {
+    final productprovider = Provider.of<ProductProvider>(context);
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -53,8 +58,28 @@ class _AddProductQuantityPopupState extends State<AddProductQuantityPopup> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  if (imei1Controller.text.isEmpty) {
+                    Utils.showToast('Please enter imei');
+                  } else if (serialNumberController.text.isEmpty) {
+                    Utils.showToast('please enter serail number');
+                  }
+                  final String productId = const Uuid().v4();
+                  final ProductModel newProduct = ProductModel(
+                      productId: productId,
+                      productName: widget.productModel.productName,
+                      productInvoice: widget.productModel.productInvoice,
+                      salePrice: widget.productModel.salePrice,
+                      ram: widget.productModel.ram,
+                      rom: widget.productModel.rom,
+                      stock: 'availiable',
+                      imeiNumbers: [imei1Controller.text, imei2Controller.text],
+                      serialNumbers: [serialNumberController.text],
+                      company: widget.productModel.company);
+                  imei1Controller.clear();
+                  imei2Controller.clear();
+                  serialNumberController.clear();
+                  await productprovider.addProduct(newProduct);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.PrimaryColor,

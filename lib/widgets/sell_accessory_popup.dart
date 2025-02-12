@@ -47,6 +47,12 @@ class _SellAccessoriesPopupState extends State<SellAccessoriesPopup> {
                 hintText: "Quantity",
                 keyboardType: TextInputType.number,
               ),
+              const SizedBox(height: 10),
+              CustomTextField(
+                controller: priceController,
+                hintText: "Sale Price",
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -54,7 +60,8 @@ class _SellAccessoriesPopupState extends State<SellAccessoriesPopup> {
                       widget.accessorymodel.id.toString(),
                       int.parse(quantityController.text),
                       customerController.text,
-                      DateTime.now());
+                      DateTime.now(),
+                      int.parse(priceController.text));
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

@@ -44,6 +44,8 @@ dependencies:
   fluttertoast: ^8.2.11
   shared_preferences: ^2.5.1
   uuid: ^4.5.1
+  path_provider: ^2.1.5
+  file_picker: ^8.3.5
 
 dev_dependencies:
   flutter_test:

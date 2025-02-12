@@ -18,7 +18,7 @@ class _EditAccessoryPopupState extends State<EditAccessoryPopup> {
   late TextEditingController nameController;
   late TextEditingController quantityController;
   late TextEditingController invoiceController;
-  late TextEditingController priceController;
+  late TextEditingController vendorController;
 
   @override
   void initState() {
@@ -28,8 +28,8 @@ class _EditAccessoryPopupState extends State<EditAccessoryPopup> {
         TextEditingController(text: widget.accessory.quantity.toString());
     invoiceController =
         TextEditingController(text: widget.accessory.invoice.toString());
-    priceController =
-        TextEditingController(text: widget.accessory.price.toString());
+    vendorController =
+        TextEditingController(text: widget.accessory.vendorName.toString());
   }
 
   @override
@@ -37,7 +37,7 @@ class _EditAccessoryPopupState extends State<EditAccessoryPopup> {
     nameController.dispose();
     quantityController.dispose();
     invoiceController.dispose();
-    priceController.dispose();
+    vendorController.dispose();
     super.dispose();
   }
 
@@ -65,6 +65,11 @@ class _EditAccessoryPopupState extends State<EditAccessoryPopup> {
               ),
               const SizedBox(height: 10),
               CustomTextField(
+                controller: nameController,
+                hintText: "Vendor Name",
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
                 controller: quantityController,
                 hintText: "Quantity",
                 keyboardType: TextInputType.number,
@@ -75,21 +80,15 @@ class _EditAccessoryPopupState extends State<EditAccessoryPopup> {
                 hintText: "Invoice Price",
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                controller: priceController,
-                hintText: "Price",
-                keyboardType: TextInputType.number,
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   final AccessoriesModel updatedAccessory = AccessoriesModel(
                     id: widget.accessory.id,
                     name: nameController.text,
+                    vendorName: vendorController.text,
                     quantity: int.parse(quantityController.text),
                     invoice: int.parse(invoiceController.text),
-                    price: int.parse(priceController.text),
                   );
                   productProvider.editAccessory(updatedAccessory);
                   Navigator.pop(context);

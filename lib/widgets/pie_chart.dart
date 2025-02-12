@@ -8,6 +8,7 @@ class MobileSalesChart extends StatelessWidget {
   final double realmePercentage;
   final double redmiPercentage;
   final double othersPercentage;
+  final int unitsSold;
 
   const MobileSalesChart({
     super.key,
@@ -16,7 +17,18 @@ class MobileSalesChart extends StatelessWidget {
     required this.realmePercentage,
     required this.redmiPercentage,
     required this.othersPercentage,
+    required this.unitsSold,
   });
+
+  String formatUnits(int unitsSold) {
+    if (unitsSold >= 1000000) {
+      return '${(unitsSold / 1000000).toStringAsFixed(1)}M';
+    } else if (unitsSold >= 1000) {
+      return '${(unitsSold / 1000).toStringAsFixed(1)}K';
+    } else {
+      return unitsSold.toString();
+    }
+  }
 
   Widget _buildLegendItem(String title, String percentage, Color color) {
     return Padding(
@@ -101,12 +113,12 @@ class MobileSalesChart extends StatelessWidget {
                 width: 2.0,
               ),
             ),
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "72k",
+                    formatUnits(unitsSold),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

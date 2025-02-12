@@ -16,6 +16,9 @@
     <string>$(PRODUCT_NAME)</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
+    <key>com.apple.security.files.user-selected.read-write</key>
+<true/>
+
     <key>CFBundleShortVersionString</key>
     <string>$(FLUTTER_BUILD_NAME)</string>
     <key>CFBundleVersion</key>
